@@ -70,6 +70,7 @@ const UsersListPage = () => {
                           JSON.stringify(selectedProf)
                   )
                 : data;
+            // персоанализируем страницу отображения списка пользователей, исключая из списка текущего юзера
             return filteredUsers.filter((u) => u._id !== currentUser._id);
         }
         const filteredUsers = filterUsers(users);
