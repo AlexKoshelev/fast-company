@@ -66,11 +66,14 @@ const AuthProvider = ({ children }) => {
     async function updateUserData(data) {
         try {
             const { content } = await userService.update(data);
+            console.log(content);
+
             setUser(content);
         } catch (error) {
             errorCatcher(error);
         }
     }
+
     async function signUp({ email, password, ...rest }) {
         try {
             const { data } = await httpAuth.post(`accounts:signUp`, {
@@ -114,13 +117,20 @@ const AuthProvider = ({ children }) => {
             errorCatcher(error);
         }
     }
-    function errorCatcher(error) {
-        const { message } = error.response.data;
-        setError(message);
+
+    function errorCatcher(message) {
+        if (message.response) {
+            const { error } = message.response.data;
+            console.log(error);
+
+            setError(error);
+        }
     }
     async function getUserData() {
         try {
             const { content } = await userService.getCurrentUser();
+            console.log(content);
+
             setUser(content);
         } catch (error) {
             errorCatcher(error);

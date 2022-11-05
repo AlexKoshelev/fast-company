@@ -15,23 +15,30 @@ const EditUserPage = () => {
     const { currentUser, updateUserData } = useAuth();
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(false);
+    const { qualities, isLoading: qualitiesLoading } = useQualities();
+
+    const qualitiesList = qualities.map((q) => ({
+        label: q.name,
+        value: q._id
+    }));
     const [data, setData] = useState({
-        name: "",
-        email: "",
-        profession: "",
-        sex: "male",
-        qualities: []
+        name: currentUser.name || "",
+        email: currentUser.email || "",
+        profession: currentUser.profession || "",
+        sex: currentUser.sex || "male",
+        qualities:
+            currentUser.qualities.map((quality) =>
+                qualitiesList.find(
+                    (qualitiesListItem) => qualitiesListItem.value === quality
+                )
+            ) || []
     });
     const { professions, isLoading: professionLoading } = useProfessions();
     const professionsList = professions.map((p) => ({
         label: p.name,
         value: p._id
     }));
-    const { qualities } = useQualities();
-    const qualitiesList = qualities.map((q) => ({
-        label: q.name,
-        value: q._id
-    }));
+
     const [errors, setErrors] = useState({});
 
     function getQualitiesListByIds(qualitiesIds) {
@@ -50,6 +57,8 @@ const EditUserPage = () => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
+        console.log(data);
+
         await updateUserData({
             ...data,
             qualities: data.qualities.map((q) => q.value)
@@ -64,14 +73,15 @@ const EditUserPage = () => {
         }));
         return result;
     };
+
     useEffect(() => {
-        if (!professionLoading && qualities && currentUser && !data) {
+        if (!professionLoading && !qualitiesLoading && currentUser && !data) {
             setData({
                 ...currentUser,
                 qualities: transformData(currentUser.qualities)
             });
         }
-    }, [professionLoading, qualities, currentUser, data]);
+    }, [professionLoading, qualitiesLoading, currentUser, data]);
 
     useEffect(() => {
         if (data._id) setIsLoading(false);
