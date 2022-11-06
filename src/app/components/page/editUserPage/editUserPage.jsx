@@ -26,12 +26,11 @@ const EditUserPage = () => {
         email: currentUser.email || "",
         profession: currentUser.profession || "",
         sex: currentUser.sex || "male",
-        qualities:
-            currentUser.qualities.map((quality) =>
+        qualities: /*  currentUser.qualities.map((quality) =>
                 qualitiesList.find(
                     (qualitiesListItem) => qualitiesListItem.value === quality
                 )
-            ) || []
+            ) || */ []
     });
     const { professions, isLoading: professionLoading } = useProfessions();
     const professionsList = professions.map((p) => ({
@@ -57,8 +56,6 @@ const EditUserPage = () => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        console.log(data);
-
         await updateUserData({
             ...data,
             qualities: data.qualities.map((q) => q.value)

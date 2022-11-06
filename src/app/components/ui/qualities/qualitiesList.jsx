@@ -8,9 +8,8 @@ const QualitiesList = ({ qualities }) => {
     if (isLoading) return "Loading...";
     return (
         <>
-            {qualities.map((qual) => (
-                <Quality key={qual} id={qual} />
-            ))}
+            {qualities &&
+                qualities.map((qual) => <Quality key={qual} id={qual} />)}
         </>
     );
 };

@@ -97,7 +97,6 @@ const AuthProvider = ({ children }) => {
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
-            console.log(code, message);
             if (code === 400) {
                 if (message === "EMAIL_EXISTS") {
                     const errorObject = {
@@ -111,7 +110,6 @@ const AuthProvider = ({ children }) => {
     async function createUser(data) {
         try {
             const { content } = await userService.create(data);
-            console.log(content);
             setUser(content);
         } catch (error) {
             errorCatcher(error);
@@ -122,15 +120,12 @@ const AuthProvider = ({ children }) => {
         if (message.response) {
             const { error } = message.response.data;
             console.log(error);
-
             setError(error);
         }
     }
     async function getUserData() {
         try {
             const { content } = await userService.getCurrentUser();
-            console.log(content);
-
             setUser(content);
         } catch (error) {
             errorCatcher(error);
@@ -153,9 +148,16 @@ const AuthProvider = ({ children }) => {
     }, [error]);
     return (
         <AuthContext.Provider
-            value={{ signUp, logIn, currentUser, logOut, updateUserData }}
+            value={{
+                signUp,
+                logIn,
+                currentUser,
+                logOut,
+                updateUserData,
+                isLoading
+            }}
         >
-            {!isLoading ? children : "Loading..."}
+            {!isLoading && currentUser ? children : "Loading..."}
         </AuthContext.Provider>
     );
 };
