@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 
 import TextField from "../../common/form/textField";
@@ -16,12 +16,15 @@ const EditUserPage = () => {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(false);
     const { qualities, isLoading: qualitiesLoading } = useQualities();
+    const { userId } = useParams();
+    console.log(currentUser);
 
     const qualitiesList = qualities.map((q) => ({
         label: q.name,
         value: q._id
     }));
     const [data, setData] = useState({
+        ...currentUser,
         name: currentUser.name || "",
         email: currentUser.email || "",
         profession: currentUser.profession || "",
@@ -32,6 +35,8 @@ const EditUserPage = () => {
                 )
             ) || */ []
     });
+    console.log(data);
+
     const { professions, isLoading: professionLoading } = useProfessions();
     const professionsList = professions.map((p) => ({
         label: p.name,
@@ -58,8 +63,12 @@ const EditUserPage = () => {
         if (!isValid) return;
         await updateUserData({
             ...data,
-            qualities: data.qualities.map((q) => q.value)
+            qualities: data.qualities.map((q) => q.value),
+            _id: userId
         });
+        console.log(userId);
+
+        console.log(data);
 
         history.push(`/users/${currentUser._id}`);
     };

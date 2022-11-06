@@ -69,6 +69,7 @@ const AuthProvider = ({ children }) => {
             console.log(content);
 
             setUser(content);
+            /*  getUserData(); */
         } catch (error) {
             errorCatcher(error);
         }

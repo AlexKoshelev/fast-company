@@ -13,7 +13,6 @@ const Comment = ({
     const { getUserById } = useUser();
     const { currentUser } = useAuth();
     const user = getUserById(userId);
-    console.log(user);
 
     return (
         <>
@@ -33,7 +32,7 @@ const Comment = ({
                                     <div className="mb-4">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <p className="mb-1 ">
-                                                {user && user.name}{" "}
+                                                {user && currentUser.name}{" "}
                                                 <span className="small">
                                                     - {displayDate(created)}
                                                 </span>
