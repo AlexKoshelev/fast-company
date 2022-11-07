@@ -26,7 +26,6 @@ const userService = {
             userEndpoint + localStorageService.getUserId(),
             payload
         );
-        console.log(data);
 
         return data;
     }

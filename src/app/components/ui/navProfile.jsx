@@ -7,7 +7,6 @@ function NavProfile() {
     const toggleMenu = () => {
         setOpen((prevState) => !prevState);
     };
-    console.log(currentUser);
 
     return (
         <div className="dropdown" onClick={toggleMenu}>
