@@ -5,7 +5,8 @@ const qualitiesSlice = createSlice({
     initialState: {
         entities: null,
         isLoading: true,
-        error: null
+        error: null,
+        lastFetch: null
     },
     reducers: {
         qualitiesRequested: (state) => {
@@ -13,6 +14,7 @@ const qualitiesSlice = createSlice({
         },
         qualitiesReceved: (state, action) => {
             state.entities = action.payload;
+            state.lastFetch = Date.now();
             state.isLoading = false;
         },
         qualitiesRequestFiled: (state, action) => {
@@ -26,23 +28,34 @@ const { reducer: qualitiesReducer, actions } = qualitiesSlice;
 
 const { qualitiesRequested, qualitiesReceved, qualitiesRequestFiled } = actions;
 
-export const loadQualitiesList = () => async (dispatch) => {
-    dispatch(qualitiesRequested());
-    try {
-        const { content } = await qualityService.fetchAll();
-        dispatch(qualitiesReceved(content));
-    } catch (error) {
-        dispatch(qualitiesRequestFiled(error.message));
+function isOutDated(date) {
+    if (Date.now() - date > 10 * 60 * 100) {
+        return true;
+    }
+    return false;
+}
+
+export const loadQualitiesList = () => async (dispatch, getState) => {
+    console.log(dispatch);
+
+    const { lastFetch } = getState().qualities;
+    if (isOutDated(lastFetch)) {
+        dispatch(qualitiesRequested());
+        try {
+            const { content } = await qualityService.fetchAll();
+            dispatch(qualitiesReceved(content));
+        } catch (error) {
+            dispatch(qualitiesRequestFiled(error.message));
+        }
     }
 };
 
 export const getQualities = () => (state) => state.qualities.entities;
 export const getQualitiesLoadingStatus = () => (state) =>
     state.qualities.isLoading;
+
 export const getQualitiesByIds = (qualitiesIds) => (state) => {
     if (state.qualities.entities && qualitiesIds) {
-        console.log(state.qualities.entities);
-
         const qualitiesArray = [];
         for (let i = 0; i < qualitiesIds.length; i++) {
             for (const quality of state.qualities.entities) {

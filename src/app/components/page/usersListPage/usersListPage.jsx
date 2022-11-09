@@ -9,10 +9,18 @@ import _ from "lodash";
 import { useUser } from "../../../hooks/useUsers";
 import { useProfessions } from "../../../hooks/useProfession";
 import { useAuth } from "../../../hooks/useAuth";
+/* import { useSelector } from "react-redux";
+import {
+    getProfessionsLoadingStatus,
+    loadProfessionsList
+} from "../../../store/professions"; */
 const UsersListPage = () => {
     const { users } = useUser();
     const { currentUser } = useAuth();
     const { isLoading: professionsLoading, professions } = useProfessions();
+
+    /*     const professionsLoading = useSelector(getProfessionsLoadingStatus());
+    const professions = useSelector(loadProfessionsList()); */
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedProf, setSelectedProf] = useState();
