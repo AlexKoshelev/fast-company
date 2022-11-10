@@ -36,8 +36,6 @@ function isOutDated(date) {
 }
 
 export const loadQualitiesList = () => async (dispatch, getState) => {
-    console.log(dispatch);
-
     const { lastFetch } = getState().qualities;
     if (isOutDated(lastFetch)) {
         dispatch(qualitiesRequested());
