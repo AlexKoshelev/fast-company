@@ -2,6 +2,7 @@ import { createAction, createSlice } from "@reduxjs/toolkit";
 import authService from "../services/auth.service";
 import localStorageService from "../services/localStorage.service";
 import userService from "../services/user.service";
+import { generateAuthError } from "../utils/generateAuthError";
 import history from "../utils/history";
 
 const initialState = localStorageService.getAccessToken()
@@ -56,11 +57,14 @@ const usersSlice = createSlice({
             state.auth = null;
             state.dataLoaded = false;
         },
-        userUpdated(state, action) {
+        userUpdated: (state, action) => {
             const elementIndex = state.entities.findIndex(
                 (u) => u._id === action.payload._id
             );
             state.entities[elementIndex] = action.payload;
+        },
+        authRequested: (state) => {
+            state.errors = null;
         }
     }
 });
@@ -92,7 +96,16 @@ export const logIn =
             localStorageService.setTokens(data);
             history.push(redirect);
         } catch (error) {
-            dispatch(authRequestFailed(error.message));
+            const message = error.response.data.error.message;
+            const code = error.response.data.error.code;
+            console.log(message);
+
+            if (code === 400) {
+                const errorMessage = generateAuthError(message);
+                dispatch(authRequestFailed(errorMessage));
+            } else {
+                dispatch(authRequestFailed(error.message));
+            }
         }
     };
 function createUser(payload) {
@@ -179,4 +192,5 @@ export const getIsLoggedIn = () => (state) => state.users.isLoggedIn;
 export const getDataStatus = () => (state) => state.users.dataLoaded;
 export const getUSersLoadingStatus = () => (state) => state.users.isLoading;
 export const getCurrentUserId = () => (state) => state.users.auth.userId;
+export const getAuthErrors = () => (state) => state.users.errors;
 export default usersReducer;
