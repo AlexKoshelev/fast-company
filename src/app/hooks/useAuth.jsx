@@ -66,10 +66,8 @@ const AuthProvider = ({ children }) => {
     async function updateUserData(data) {
         try {
             const { content } = await userService.update(data);
-            console.log(content);
 
             setUser(content);
-            /*  getUserData(); */
         } catch (error) {
             errorCatcher(error);
         }
@@ -158,7 +156,7 @@ const AuthProvider = ({ children }) => {
                 isLoading
             }}
         >
-            {!isLoading && currentUser ? children : "Loading..."}
+            {!isLoading ? children : "Loading..."}
         </AuthContext.Provider>
     );
 };

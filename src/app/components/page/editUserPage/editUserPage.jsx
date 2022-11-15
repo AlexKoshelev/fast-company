@@ -1,23 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { validator } from "../../../utils/validator";
-
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radioField";
 import MultiSelectField from "../../common/form/multiSelectField";
 import BackHistoryButton from "../../common/backButton";
-import { useQualities } from "../../../hooks/useQualities";
-import { useProfessions } from "../../../hooks/useProfession";
-import { useAuth } from "../../../hooks/useAuth";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+    getQualities,
+    getQualitiesLoadingStatus
+} from "../../../store/qualities";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from "../../../store/professions";
+import { getCurrentUserData, updateUser } from "../../../store/users";
 
 const EditUserPage = () => {
-    const { currentUser, updateUserData } = useAuth();
+    const currentUser = useSelector(getCurrentUserData());
+    const dispatch = useDispatch();
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(false);
-    const { qualities, isLoading: qualitiesLoading } = useQualities();
+    const qualities = useSelector(getQualities());
+
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const { userId } = useParams();
-    console.log(currentUser);
+
+    const professionLoading = useSelector(getProfessionsLoadingStatus());
+
+    const professions = useSelector(getProfessions());
 
     const qualitiesList = qualities.map((q) => ({
         label: q.name,
@@ -29,15 +42,9 @@ const EditUserPage = () => {
         email: currentUser.email || "",
         profession: currentUser.profession || "",
         sex: currentUser.sex || "male",
-        qualities: /*  currentUser.qualities.map((quality) =>
-                qualitiesList.find(
-                    (qualitiesListItem) => qualitiesListItem.value === quality
-                )
-            ) || */ []
+        qualities: []
     });
-    console.log(data);
 
-    const { professions, isLoading: professionLoading } = useProfessions();
     const professionsList = professions.map((p) => ({
         label: p.name,
         value: p._id
@@ -57,18 +64,18 @@ const EditUserPage = () => {
         }
         return qualitiesArray;
     }
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        await updateUserData({
-            ...data,
-            qualities: data.qualities.map((q) => q.value),
-            _id: userId
-        });
-        console.log(userId);
 
-        console.log(data);
+        dispatch(
+            updateUser({
+                ...data,
+                qualities: data.qualities.map((q) => q.value),
+                _id: userId
+            })
+        );
 
         history.push(`/users/${currentUser._id}`);
     };

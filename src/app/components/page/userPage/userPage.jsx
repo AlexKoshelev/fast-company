@@ -4,14 +4,13 @@ import UserCard from "../../ui/userCard";
 import QualitiesCard from "../../ui/qualitiesCard";
 import MeetingsCard from "../../ui/meetingsCard";
 import Comments from "../../ui/comments";
-/* import { useUser } from "../../../hooks/useUsers"; */
 import { CommentsProvider } from "../../../hooks/useComments";
-import { useAuth } from "../../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import { getUserById } from "../../../store/users";
 
 const UserPage = ({ userId }) => {
-    /*     const { getUserById } = useUser();
-    const user = getUserById(userId); */
-    const { currentUser: user } = useAuth();
+    const user = useSelector(getUserById(userId));
+
     if (user) {
         return (
             <div className="container">
