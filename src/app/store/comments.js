@@ -74,7 +74,8 @@ export const removeComment = (id) => async (dispatch) => {
         dispatch(commentsRequestFailed(error.message));
     }
 };
-export const getComments = () => (state) => state.comments.entities;
+export const getComments = () => (state) =>
+    console.log(state.comments.entities);
 export const getCommentsLoadingStatus = () => (state) =>
     state.comments.isLoading;
 
